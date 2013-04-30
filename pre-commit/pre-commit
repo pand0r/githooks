@@ -1,0 +1,55 @@
+#!/bin/sh
+
+# Author Patrick Heina <patrick.heina@gmail.com>
+# http://www.patrick-heina.de
+# http://www.qnc.de
+# Date 2013/04/25
+
+
+# rename this hook to pre-commit, or add it to your existing hook
+
+# Mode 0 = doesn't allow commiting forbidden patterns on any branch
+# Mode 1 = doesn't allow to commit to branches defined in FORBIDDEN_BRANCHES and show warnings on other branches (for example on a feature-branch)
+MODE=1
+FORBIDDEN_BRANCHES="master|develop|hotfix/*"
+
+# Setup the Hook - which files, which forbidden patterns?
+FILES_PATTERN='\.(js|html|asp)(\..+)?$'
+FORBIDDEN='console.*|var_dump|debug'
+
+# Get the current Branch
+CUR_BRANCH=`git rev-parse --abbrev-ref HEAD`
+
+
+
+
+ABORT_COMMIT=false
+
+git diff --cached --name-only | \
+    egrep $FILES_PATTERN | \
+    GREP_COLOR='4;5;37;41' xargs egrep --color --with-filename -n $FORBIDDEN  && ABORT_COMMIT=true
+
+
+
+IS_FORBIDDEN_BRANCH="`echo $CUR_BRANCH | egrep $FORBIDDEN_BRANCHES`"
+
+
+if [ true == $ABORT_COMMIT ]; then
+	
+	if [ 0 == $MODE ]; then
+		echo "Forbidden patterns were found in your commit"
+		echo "Aborted the commit!!! Please remove the forbidden patterns"
+		exit 1
+	fi
+
+	if [ 1 == $MODE ]; then
+		if [ "" != "`echo $CUR_BRANCH | egrep $FORBIDDEN_BRANCHES`" ]; then
+				echo "You are on the forbidden branch "$CUR_BRANCH" and forbidden patterns were tied to commit"
+				echo "Aborted the commit!!! Please remove the forbidden patterns"
+				exit 1
+		else
+			echo "You aren't on a forbidden branch, but you are using forbidden patterns."
+			echo "Keep them in Mind and remove them if you finished your work!"
+		fi
+	fi
+fi
