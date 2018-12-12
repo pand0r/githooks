@@ -14,7 +14,7 @@ FORBIDDEN_BRANCHES="master|develop|hotfix/*"
 
 # Setup the Hook - which files, which forbidden patterns?
 FILES_PATTERN='\.(js|html|php)(\..+)?$'
-FORBIDDEN='console.*|var_dump'
+FORBIDDEN='console.*|var_dump|alert'
 
 # Get the current Branch
 CUR_BRANCH=`git rev-parse --abbrev-ref HEAD`
