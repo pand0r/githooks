@@ -1,4 +1,4 @@
-#!/bin/sh
+#!/bin/bash
 
 # Author Patrick Heina <patrick.heina@gmail.com>
 # http://www.patrick-heina.de
@@ -9,16 +9,15 @@
 
 # Mode 0 = doesn't allow commiting forbidden patterns on any branch
 # Mode 1 = doesn't allow to commit to branches defined in FORBIDDEN_BRANCHES and show warnings on other branches (for example on a feature-branch)
-MODE=1
+MODE=0
 FORBIDDEN_BRANCHES="master|develop|hotfix/*"
 
 # Setup the Hook - which files, which forbidden patterns?
-FILES_PATTERN='\.(js|html|asp)(\..+)?$'
-FORBIDDEN='console.*|var_dump|debug'
+FILES_PATTERN='\.(js|html|php)(\..+)?$'
+FORBIDDEN='console.*|var_dump'
 
 # Get the current Branch
 CUR_BRANCH=`git rev-parse --abbrev-ref HEAD`
-
 
 
 
